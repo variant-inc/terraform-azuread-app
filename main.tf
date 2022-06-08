@@ -37,13 +37,6 @@ locals {
   }
 }
 
-module "tags" {
-  source       = "github.com/variant-inc/lazy-terraform//submodules/tags?ref=v1"
-  name         = var.name
-  user_tags    = var.user_tags
-  octopus_tags = var.octopus_tags
-}
-
 resource "random_uuid" "role_uuid" {
   for_each = local.uuid_roles
 }
@@ -59,7 +52,7 @@ data "azuread_user" "owner" {
 data "azuread_client_config" "current" {}
 
 resource "azuread_application" "app" {
-  display_name    = var.name
+  display_name    = local.kebab_name
   identifier_uris = ["api://${random_uuid.app_uri.result}-${var.name}"]
   owners          = [data.azuread_client_config.current.object_id]
 
@@ -119,7 +112,7 @@ resource "azuread_service_principal" "enterprise_app" {
   application_id               = azuread_application.app.application_id
   app_role_assignment_required = false
   owners                       = [data.azuread_client_config.current.object_id]
-  notes                        = jsonencode(module.tags.tags)
+  notes                        = jsonencode(var.tags)
 
   feature_tags {
     enterprise = true
@@ -144,7 +137,7 @@ resource "azuread_app_role_assignment" "app_role_assignment" {
 
 resource "aws_secretsmanager_secret" "app_secrets" {
   name = "azure-app-${local.kebab_name}"
-  tags = module.tags.tags
+  tags = var.tags
 }
 
 resource "aws_secretsmanager_secret_version" "app_secret_version" {
