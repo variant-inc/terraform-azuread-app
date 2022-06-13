@@ -19,9 +19,7 @@
 
 ## Modules
 
-| Name | Source | Version |
-|------|--------|---------|
-| <a name="module_tags"></a> [tags](#module\_tags) | github.com/variant-inc/lazy-terraform//submodules/tags?ref=v1 |  |
+No modules.
 
 ## Resources
 
@@ -48,10 +46,9 @@
 | <a name="input_homepage_url"></a> [homepage\_url](#input\_homepage\_url) | (Optional) Home page or landing page of the application | `string` | `null` | no |
 | <a name="input_logout_url"></a> [logout\_url](#input\_logout\_url) | (Optional) The URL that will be used to sign out a user | `string` | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name of application using the Azure app. | `string` | n/a | yes |
-| <a name="input_octopus_tags"></a> [octopus\_tags](#input\_octopus\_tags) | Octopus Tags. See module docs in README.md | `map(string)` | n/a | yes |
 | <a name="input_owners"></a> [owners](#input\_owners) | The owners of this application | `list(string)` | n/a | yes |
 | <a name="input_redirect_uris"></a> [redirect\_uris](#input\_redirect\_uris) | The redirect URIs where OAuth 2.0 authorization codes and access tokens are sent | `list(string)` | `null` | no |
-| <a name="input_user_tags"></a> [user\_tags](#input\_user\_tags) | User tags. See module docs in README.md | `map(string)` | n/a | yes |
+| <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags (user + octopus) to assign to all resources | `map(string)` | n/a | yes |
 
 ## Outputs
 

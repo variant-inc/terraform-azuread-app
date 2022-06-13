@@ -8,13 +8,8 @@ variable "environment" {
   type        = string
 }
 
-variable "user_tags" {
-  description = "User tags. See module docs in README.md"
-  type        = map(string)
-}
-
-variable "octopus_tags" {
-  description = "Octopus Tags. See module docs in README.md"
+variable "tags" {
+  description = "A mapping of tags (user + octopus) to assign to all resources"
   type        = map(string)
 }
 
