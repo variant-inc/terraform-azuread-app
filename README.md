@@ -13,8 +13,8 @@
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.0 |
-| <a name="provider_azuread"></a> [azuread](#provider\_azuread) | ~> 2.15.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.19.0 |
+| <a name="provider_azuread"></a> [azuread](#provider\_azuread) | 2.15.0 |
 | <a name="provider_random"></a> [random](#provider\_random) | 3.1.0 |
 
 ## Modules
@@ -28,10 +28,14 @@ No modules.
 | [aws_secretsmanager_secret.app_secrets](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret) | resource |
 | [aws_secretsmanager_secret_version.app_secret_version](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret_version) | resource |
 | [azuread_app_role_assignment.app_role_assignment](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/app_role_assignment) | resource |
+| [azuread_app_role_assignment.service_apps](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/app_role_assignment) | resource |
 | [azuread_application.app](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application) | resource |
+| [azuread_application.service_apps](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application) | resource |
 | [azuread_application_password.app_client_secret](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application_password) | resource |
+| [azuread_application_password.service_app_client_secrets](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application_password) | resource |
 | [azuread_group.groups](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/group) | resource |
 | [azuread_service_principal.enterprise_app](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal) | resource |
+| [azuread_service_principal.service_enterprise_apps](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal) | resource |
 | [random_uuid.app_uri](https://registry.terraform.io/providers/hashicorp/random/3.1.0/docs/resources/uuid) | resource |
 | [random_uuid.role_uuid](https://registry.terraform.io/providers/hashicorp/random/3.1.0/docs/resources/uuid) | resource |
 | [azuread_client_config.current](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/client_config) | data source |
@@ -46,8 +50,9 @@ No modules.
 | <a name="input_homepage_url"></a> [homepage\_url](#input\_homepage\_url) | (Optional) Home page or landing page of the application | `string` | `null` | no |
 | <a name="input_logout_url"></a> [logout\_url](#input\_logout\_url) | (Optional) The URL that will be used to sign out a user | `string` | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name of application using the Azure app. | `string` | n/a | yes |
-| <a name="input_owners"></a> [owners](#input\_owners) | The owners of this application | `list(string)` | n/a | yes |
+| <a name="input_owners"></a> [owners](#input\_owners) | The email of the owners of this application | `list(string)` | n/a | yes |
 | <a name="input_redirect_uris"></a> [redirect\_uris](#input\_redirect\_uris) | The redirect URIs where OAuth 2.0 authorization codes and access tokens are sent | `list(string)` | `null` | no |
+| <a name="input_service_app_roles_assignment"></a> [service\_app\_roles\_assignment](#input\_service\_app\_roles\_assignment) | Service Apps + Roles | <pre>list(object({<br>    name  = string<br>    roles = list(string)<br>  }))</pre> | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags (user + octopus) to assign to all resources | `map(string)` | n/a | yes |
 
 ## Outputs

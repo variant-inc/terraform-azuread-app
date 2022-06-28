@@ -31,7 +31,24 @@ module "terraform_azuread_spa" {
     {
       "name" : "group-name3",
       "roles" : [
-        "abcd"
+        "abcd",
+        "wxyz"
+      ]
+    }
+  ]
+  service_app_roles_assignment = [
+    {
+      "name" : "service-app-1",
+      "roles" : [
+        "abcd",
+        "efgh"
+      ]
+    },
+    {
+      "name" : "service-app-2",
+      "roles" : [
+        "hjkl",
+        "wxyz"
       ]
     }
   ]
