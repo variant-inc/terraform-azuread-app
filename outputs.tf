@@ -18,6 +18,16 @@ output "client_id" {
   value       = azuread_application.app.application_id
 }
 
+output "application_id_uri" {
+  description = "The Application ID URI of the Azure application."
+  value       = "api://${random_uuid.app_uri.result}-${var.name}"
+}
+
+output "service_apps_client_id" {
+  description = "The Application(client) ID of the Azure service applications."
+  value       = { for k, v in azuread_application.service_apps : k => v.object_id }
+}
+
 output "app_group_links" {
   description = "Direct Links for the security groups for the Azure app."
   value       = { for k, v in azuread_group.groups : k => format("https://portal.azure.com/#blade/Microsoft_AAD_IAM/GroupDetailsMenuBlade/Overview/groupId/%s", v.object_id) }

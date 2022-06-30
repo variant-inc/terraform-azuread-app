@@ -64,6 +64,8 @@ No modules.
 | <a name="output_app_name"></a> [app\_name](#output\_app\_name) | Azure App display name. |
 | <a name="output_app_secrets_arn"></a> [app\_secrets\_arn](#output\_app\_secrets\_arn) | The Amazon Secret Manager ARN of the Azure app's secrets. |
 | <a name="output_app_secrets_name"></a> [app\_secrets\_name](#output\_app\_secrets\_name) | The Amazon Secret Manager name of the Azure app's secrets. |
+| <a name="output_application_id_uri"></a> [application\_id\_uri](#output\_application\_id\_uri) | The Application ID URI of the Azure application. |
 | <a name="output_client_id"></a> [client\_id](#output\_client\_id) | The Application(client) ID of the Azure application. |
 | <a name="output_object_id"></a> [object\_id](#output\_object\_id) | Azure App Id. |
+| <a name="output_service_apps_client_id"></a> [service\_apps\_client\_id](#output\_service\_apps\_client\_id) | The Application(client) ID of the Azure service applications. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

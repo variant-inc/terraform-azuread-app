@@ -168,7 +168,9 @@ resource "aws_secretsmanager_secret_version" "app_secret_version" {
     "access_token_url" : "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/v2.0/token",
     "client_id" : azuread_application.app.application_id,
     "client_secret" : azuread_application_password.app_client_secret.value,
+    "service_apps_client_id" : { for k, v in azuread_application.service_apps : k => v.object_id },
     "service_app_secrets" : { for k, v in azuread_application_password.service_app_client_secrets : k => v.value }
+    "application_id_uri" : "api://${random_uuid.app_uri.result}-${var.name}"
     "scope" : ["open_id", "profile", "email"]
   })
 }
