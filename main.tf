@@ -3,7 +3,7 @@ locals {
 
   distinct_roles = distinct(
     flatten(
-      [for g in var.group_roles_assignment : g.roles]
+      [for g in concat(var.group_roles_assignment, var.service_app_roles_assignment) : g.roles]
     )
   )
 
@@ -35,6 +35,26 @@ locals {
     for x in flatten([for g in var.group_roles_assignment : g.name]) :
     x => x
   }
+
+  service_app_assignment = {
+    for i in var.service_app_roles_assignment : i.name => ({
+      app = i.name
+    roles = ({ for role in i.roles : role => role }) })
+  }
+
+
+  s_a = flatten([
+    for app in var.service_app_roles_assignment : [
+      for r in app.roles : ([
+        {
+          app  = app.name
+          role = r
+        }
+      ])
+    ]
+  ])
+
+  admin_grant_roles = { for i in local.s_a : "${i.app}-${i.role}" => i }
 }
 
 resource "random_uuid" "role_uuid" {
@@ -64,7 +84,7 @@ resource "azuread_application" "app" {
   dynamic "app_role" {
     for_each = local.roles
     content {
-      allowed_member_types = ["User"]
+      allowed_member_types = ["User", "Application"]
       description          = "Role - ${app_role.key}"
       enabled              = true
       id                   = app_role.value
@@ -144,10 +164,55 @@ resource "aws_secretsmanager_secret_version" "app_secret_version" {
   secret_id = aws_secretsmanager_secret.app_secrets.id
   secret_string = jsonencode({
     "callback_url" : var.redirect_uris,
-    "auth_url" : "https:login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/v2.0/authorize",
-    "access_token_url" : "https:login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/v2.0/token",
+    "auth_url" : "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/v2.0/authorize",
+    "access_token_url" : "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/v2.0/token",
     "client_id" : azuread_application.app.application_id,
     "client_secret" : azuread_application_password.app_client_secret.value,
+    "service_apps_client_id" : { for k, v in azuread_application.service_apps : k => v.object_id },
+    "service_app_secrets" : { for k, v in azuread_application_password.service_app_client_secrets : k => v.value }
+    "application_id_uri" : "api://${random_uuid.app_uri.result}-${var.name}"
     "scope" : ["open_id", "profile", "email"]
   })
+}
+
+resource "azuread_application" "service_apps" {
+  for_each     = local.service_app_assignment
+  display_name = "${local.kebab_name}-${each.key}"
+  owners       = [data.azuread_client_config.current.object_id]
+
+  required_resource_access {
+    resource_app_id = azuread_application.app.application_id
+
+    dynamic "resource_access" {
+      for_each = each.value.roles
+      content {
+        id   = azuread_service_principal.enterprise_app.app_role_ids[resource_access.key]
+        type = "Role"
+      }
+    }
+  }
+}
+
+resource "azuread_application_password" "service_app_client_secrets" {
+  for_each              = local.service_app_assignment
+  application_object_id = azuread_application.service_apps[each.value.app].object_id
+}
+
+resource "azuread_service_principal" "service_enterprise_apps" {
+  for_each                     = local.service_app_assignment
+  application_id               = azuread_application.service_apps[each.value.app].application_id
+  app_role_assignment_required = false
+  owners                       = [data.azuread_client_config.current.object_id]
+  notes                        = jsonencode(var.tags)
+
+  feature_tags {
+    enterprise = true
+  }
+}
+
+resource "azuread_app_role_assignment" "service_apps" {
+  for_each            = local.admin_grant_roles
+  app_role_id         = azuread_service_principal.enterprise_app.app_role_ids[each.value.role]
+  principal_object_id = azuread_service_principal.service_enterprise_apps[each.value.app].object_id
+  resource_object_id  = azuread_service_principal.enterprise_app.object_id
 }

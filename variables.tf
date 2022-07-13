@@ -14,12 +14,20 @@ variable "tags" {
 }
 
 variable "owners" {
-  description = "The owners of this application"
+  description = "The email of the owners of this application"
   type        = list(string)
 }
 
 variable "group_roles_assignment" {
   description = "Groups + Roles + Assignment to App"
+  type = list(object({
+    name  = string
+    roles = list(string)
+  }))
+}
+
+variable "service_app_roles_assignment" {
+  description = "Service Apps + Roles"
   type = list(object({
     name  = string
     roles = list(string)
