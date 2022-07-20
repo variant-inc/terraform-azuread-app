@@ -33,12 +33,12 @@ output "app_group_links" {
   value       = { for k, v in azuread_group.groups : k => format("https://portal.azure.com/#blade/Microsoft_AAD_IAM/GroupDetailsMenuBlade/Overview/groupId/%s", v.object_id) }
 }
 
-output "app_secrets_arn" {
+output "app_aws_secrets_arn" {
   description = "The Amazon Secret Manager ARN of the Azure app's secrets."
   value       = aws_secretsmanager_secret_version.app_secret_version.arn
 }
 
-output "app_secrets_name" {
+output "app_aws_secrets_name" {
   description = "The Amazon Secret Manager name of the Azure app's secrets."
   value       = "azure-app-${var.name}"
 }

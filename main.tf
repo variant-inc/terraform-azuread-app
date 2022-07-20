@@ -69,7 +69,14 @@ data "azuread_user" "owner" {
   user_principal_name = var.owners[count.index]
 }
 
+data "azuread_application_published_app_ids" "well_known" {}
+
 data "azuread_client_config" "current" {}
+
+resource "azuread_service_principal" "msgraph" {
+  application_id = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph
+  use_existing   = true
+}
 
 resource "azuread_application" "app" {
   display_name    = local.kebab_name
@@ -97,17 +104,17 @@ resource "azuread_application" "app" {
     resource_app_id = "00000003-0000-0000-c000-000000000000" # Microsoft Graph
 
     resource_access {
-      id   = "37f7f235-527c-4136-accd-4a02d197296e" # OpenID
+      id   = azuread_service_principal.msgraph.oauth2_permission_scope_ids["openid"]
       type = "Scope"
     }
 
     resource_access {
-      id   = "64a6cdd6-aab1-4aaf-94b8-3cc8405e90d0" # email
+      id   = azuread_service_principal.msgraph.oauth2_permission_scope_ids["email"]
       type = "Scope"
     }
 
     resource_access {
-      id   = "14dad69e-099b-42c9-810b-d002981feec1" # profile
+      id   = azuread_service_principal.msgraph.oauth2_permission_scope_ids["profile"]
       type = "Scope"
     }
   }
@@ -168,7 +175,7 @@ resource "aws_secretsmanager_secret_version" "app_secret_version" {
     "access_token_url" : "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/v2.0/token",
     "client_id" : azuread_application.app.application_id,
     "client_secret" : azuread_application_password.app_client_secret.value,
-    "service_apps_client_id" : { for k, v in azuread_application.service_apps : k => v.object_id },
+    "service_apps_client_id" : { for k, v in azuread_application.service_apps : k => v.application_id },
     "service_app_secrets" : { for k, v in azuread_application_password.service_app_client_secrets : k => v.value }
     "application_id_uri" : "api://${random_uuid.app_uri.result}-${var.name}"
     "scope" : ["open_id", "profile", "email"]
