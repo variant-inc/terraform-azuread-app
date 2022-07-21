@@ -35,9 +35,11 @@ No modules.
 | [azuread_application_password.service_app_client_secrets](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application_password) | resource |
 | [azuread_group.groups](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/group) | resource |
 | [azuread_service_principal.enterprise_app](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal) | resource |
+| [azuread_service_principal.msgraph](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal) | resource |
 | [azuread_service_principal.service_enterprise_apps](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal) | resource |
 | [random_uuid.app_uri](https://registry.terraform.io/providers/hashicorp/random/3.1.0/docs/resources/uuid) | resource |
 | [random_uuid.role_uuid](https://registry.terraform.io/providers/hashicorp/random/3.1.0/docs/resources/uuid) | resource |
+| [azuread_application_published_app_ids.well_known](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/application_published_app_ids) | data source |
 | [azuread_client_config.current](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/client_config) | data source |
 | [azuread_user.owner](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/user) | data source |
 
@@ -60,10 +62,10 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_app"></a> [app](#output\_app) | Azure App details |
+| <a name="output_app_aws_secrets_arn"></a> [app\_aws\_secrets\_arn](#output\_app\_aws\_secrets\_arn) | The Amazon Secret Manager ARN of the Azure app's secrets. |
+| <a name="output_app_aws_secrets_name"></a> [app\_aws\_secrets\_name](#output\_app\_aws\_secrets\_name) | The Amazon Secret Manager name of the Azure app's secrets. |
 | <a name="output_app_group_links"></a> [app\_group\_links](#output\_app\_group\_links) | Direct Links for the security groups for the Azure app. |
 | <a name="output_app_name"></a> [app\_name](#output\_app\_name) | Azure App display name. |
-| <a name="output_app_secrets_arn"></a> [app\_secrets\_arn](#output\_app\_secrets\_arn) | The Amazon Secret Manager ARN of the Azure app's secrets. |
-| <a name="output_app_secrets_name"></a> [app\_secrets\_name](#output\_app\_secrets\_name) | The Amazon Secret Manager name of the Azure app's secrets. |
 | <a name="output_application_id_uri"></a> [application\_id\_uri](#output\_application\_id\_uri) | The Application ID URI of the Azure application. |
 | <a name="output_client_id"></a> [client\_id](#output\_client\_id) | The Application(client) ID of the Azure application. |
 | <a name="output_object_id"></a> [object\_id](#output\_object\_id) | Azure App Id. |
