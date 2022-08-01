@@ -237,6 +237,7 @@ resource "aws_secretsmanager_secret_version" "app_secret_version" {
     }) : jsonencode({
     "client_id" : azuread_application.app.application_id,
     "client_secret" : azuread_application_password.app_client_secret.value,
+    "access_token_url" : "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/token",
     "resources" : { for a, b in local.service_app_assignment : a => format("api://%s", b.app) }
   })
 }

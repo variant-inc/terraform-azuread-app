@@ -29,17 +29,16 @@ This document provides a guide on how to deploy new apps on Azure using terrafor
         "project_group": "Default Project Group",
         "release_channel": "feature"
     },
-    "owners": ["sdoguparti@usxpress.com", "lhughs@usxpress.com"],
     "group_roles_assignment": [
       {
-        "name": "vibin",
+        "name": "Existing-Group-1",
         "roles": [
           "abcd",
           "efgh"
         ]
       },
       {
-        "name": "sathwik",
+        "name": "Existing-Group-2",
         "roles": [
           "abcd",
           "efgh",
@@ -47,12 +46,13 @@ This document provides a guide on how to deploy new apps on Azure using terrafor
         ]
       },
       {
-        "name": "LeeH",
+        "name": "Existing-Group-3",
         "roles": [
           "abcd"
         ]
       }
     ],
+  "api_apps": ["Api-Application-1", "Api-Application-2"],
 	"service_app_roles_assignment": [
       {
         "name": "service-app-1",
