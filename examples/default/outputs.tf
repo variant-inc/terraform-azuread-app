@@ -5,7 +5,7 @@ output "app" {
 
 output "app_name" {
   description = "Azure App display name."
-  value       = var.name
+  value       = local.kebab_name
 }
 
 output "object_id" {
@@ -18,27 +18,12 @@ output "client_id" {
   value       = azuread_application.app.application_id
 }
 
-output "application_id_uri" {
-  description = "The Application ID URI of the Azure application."
-  value       = "api://${random_uuid.app_uri.result}-${var.name}"
-}
-
-output "service_apps_client_id" {
-  description = "The Application(client) ID of the Azure service applications."
-  value       = { for k, v in azuread_application.service_apps : k => v.object_id }
-}
-
-output "app_group_links" {
-  description = "Direct Links for the security groups for the Azure app."
-  value       = { for k, v in azuread_group.groups : k => format("https://portal.azure.com/#blade/Microsoft_AAD_IAM/GroupDetailsMenuBlade/Overview/groupId/%s", v.object_id) }
-}
-
-output "app_secrets_arn" {
+output "app_aws_secrets_arn" {
   description = "The Amazon Secret Manager ARN of the Azure app's secrets."
-  value       = aws_secretsmanager_secret_version.app_secret_version.arn
+  value       = local.create_secret > 0 ? aws_secretsmanager_secret_version.app_secret_version[0].arn : null
 }
 
-output "app_secrets_name" {
+output "app_aws_secrets_name" {
   description = "The Amazon Secret Manager name of the Azure app's secrets."
-  value       = "azure-app-${var.name}"
+  value       = local.create_secret > 0 ? "azure-app-${var.name}" : null
 }

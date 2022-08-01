@@ -11,7 +11,6 @@ module "terraform_azuread_spa" {
     "environment" : "development",
     "project_group" : "Default Project Group",
   "release_channel" : "feature" }
-  owners = ["sdoguparti@usxpress.com"]
   group_roles_assignment = [
     {
       "name" : "group-name1",
@@ -36,21 +35,6 @@ module "terraform_azuread_spa" {
       ]
     }
   ]
-  service_app_roles_assignment = [
-    {
-      "name" : "service-app-1",
-      "roles" : [
-        "abcd",
-        "efgh"
-      ]
-    },
-    {
-      "name" : "service-app-2",
-      "roles" : [
-        "hjkl",
-        "wxyz"
-      ]
-    }
-  ]
+  api_apps       = ["Some_Application_1", "Some_Application_2"]
   redirect_uris = ["https://localhost:8080/api/test"]
 }
