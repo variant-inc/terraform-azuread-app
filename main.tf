@@ -92,13 +92,13 @@ data "azuread_service_principal" "service_apps" { # for exporting the spa_apps s
   display_name = each.key
 }
 
-
 resource "azuread_service_principal" "msgraph" {
   application_id = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph
   use_existing   = true
 }
 
 resource "azuread_application" "main_app" {
+
   display_name    = local.kebab_name
   identifier_uris = ["api://${local.kebab_name}"]
   owners          = [data.azuread_client_config.current.object_id]
