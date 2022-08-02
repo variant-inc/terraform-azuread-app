@@ -98,7 +98,7 @@ resource "azuread_service_principal" "msgraph" {
   use_existing   = true
 }
 
-resource "azuread_application" "app" {
+resource "azuread_application" "main_app" {
   display_name    = local.kebab_name
   identifier_uris = ["api://${local.kebab_name}"]
   owners          = [data.azuread_client_config.current.object_id]
@@ -177,19 +177,19 @@ resource "azuread_application" "app" {
   }
 }
 
-resource "azuread_application_pre_authorized" "example" { # for adding client apps if we are creating a api app
+resource "azuread_application_pre_authorized" "known_client_apps" { # for adding spa client apps if we are creating an api app
   for_each              = local.spa_apps
-  application_object_id = azuread_application.app.object_id
+  application_object_id = azuread_application.main_app.object_id
   authorized_app_id     = data.azuread_application.spa_apps[each.key].application_id
   permission_ids        = [random_uuid.app_scope.result]
 }
 
-resource "azuread_application_password" "app_client_secret" {
-  application_object_id = azuread_application.app.object_id
+resource "azuread_application_password" "main_app" {
+  application_object_id = azuread_application.main_app.object_id
 }
 
-resource "azuread_service_principal" "enterprise_app" {
-  application_id               = azuread_application.app.application_id
+resource "azuread_service_principal" "main_app" {
+  application_id               = azuread_application.main_app.application_id
   app_role_assignment_required = false
   owners                       = [data.azuread_client_config.current.object_id]
   notes                        = jsonencode(var.tags)
@@ -202,16 +202,16 @@ resource "azuread_service_principal" "enterprise_app" {
 resource "azuread_app_role_assignment" "service_apps" { # for granting the admin consent for service to service authentication
   for_each            = local.admin_grant_roles
   app_role_id         = data.azuread_service_principal.service_apps[each.value.app].app_role_ids[each.value.role] # roles from the application which this app needs access to
-  principal_object_id = azuread_service_principal.enterprise_app.object_id                                        # service principal object_id of this app 
+  principal_object_id = azuread_service_principal.main_app.object_id                                              # service principal object_id of this app 
   resource_object_id  = data.azuread_service_principal.service_apps[each.value.app].object_id                     # service principle of the application which this app needs access to
 }
 
-resource "azuread_app_role_assignment" "app_role_assignment" { # for assigning app roles to the provided groups
+resource "azuread_app_role_assignment" "main_app" { # for assigning app roles to the provided groups
   for_each = local.groups_assignment
 
-  app_role_id         = azuread_application.app.app_role_ids[each.value.role]
+  app_role_id         = azuread_application.main_app.app_role_ids[each.value.role]
   principal_object_id = data.azuread_group.groups[each.value.group].object_id
-  resource_object_id  = azuread_service_principal.enterprise_app.object_id
+  resource_object_id  = azuread_service_principal.main_app.object_id
 }
 
 locals {
@@ -231,12 +231,12 @@ resource "aws_secretsmanager_secret_version" "app_secret_version" {
     "callback_url" : var.redirect_uris,
     "auth_url" : "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/v2.0/authorize",
     "access_token_url" : "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/v2.0/token",
-    "client_id" : azuread_application.app.application_id,
-    "client_secret" : azuread_application_password.app_client_secret.value
+    "client_id" : azuread_application.main_app.application_id,
+    "client_secret" : azuread_application_password.main_app.value
     "scope" : concat(["open_id", "profile", "email"], var.api_apps != null ? [for app_name in var.api_apps : format("api://%s", app_name)] : []) # adding backend api app scopes only if they are supplied
     }) : jsonencode({
-    "client_id" : azuread_application.app.application_id,
-    "client_secret" : azuread_application_password.app_client_secret.value,
+    "client_id" : azuread_application.main_app.application_id,
+    "client_secret" : azuread_application_password.main_app.value,
     "access_token_url" : "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/token",
     "resources" : { for a, b in local.service_app_assignment : a => format("api://%s", b.app) }
   })

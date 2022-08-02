@@ -1,6 +1,6 @@
 output "app" {
   description = "Azure App details"
-  value       = azuread_application.app
+  value       = azuread_application.main_app
 }
 
 output "app_name" {
@@ -10,12 +10,12 @@ output "app_name" {
 
 output "object_id" {
   description = "Azure App Id."
-  value       = azuread_application.app.object_id
+  value       = azuread_application.main_app.object_id
 }
 
 output "client_id" {
   description = "The Application(client) ID of the Azure application."
-  value       = azuread_application.app.application_id
+  value       = azuread_application.main_app.application_id
 }
 
 output "app_aws_secrets_arn" {

@@ -35,6 +35,6 @@ module "terraform_azuread_spa" {
       ]
     }
   ]
-  api_apps       = ["Some_Application_1", "Some_Application_2"]
+  api_apps      = ["Some_Application_1", "Some_Application_2"]
   redirect_uris = ["https://localhost:8080/api/test"]
 }
