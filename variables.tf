@@ -13,31 +13,40 @@ variable "tags" {
   type        = map(string)
 }
 
-variable "owners" {
-  description = "The email of the owners of this application"
-  type        = list(string)
-}
-
 variable "group_roles_assignment" {
-  description = "Groups + Roles + Assignment to App"
+  description = " Names of the Groups + Roles + Assignment to App"
   type = list(object({
     name  = string
     roles = list(string)
   }))
+  default = []
 }
 
 variable "service_app_roles_assignment" {
-  description = "Service Apps + Roles"
+  description = "Names of the external Azure AD apps + Roles"
   type = list(object({
     name  = string
     roles = list(string)
   }))
+  default = []
+}
+
+variable "spa_apps" {
+  description = "The names of the frontend spa app if you are creating a backend api app"
+  type        = list(string)
+  default     = []
+}
+
+variable "api_apps" {
+  description = "The names of the backend API apps if you are creating a frontend spa app"
+  type        = list(string)
+  default     = []
 }
 
 variable "redirect_uris" {
   description = "The redirect URIs where OAuth 2.0 authorization codes and access tokens are sent"
   type        = list(string)
-  default     = null
+  default     = []
 }
 
 variable "homepage_url" {

@@ -27,34 +27,35 @@ No modules.
 |------|------|
 | [aws_secretsmanager_secret.app_secrets](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret) | resource |
 | [aws_secretsmanager_secret_version.app_secret_version](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret_version) | resource |
-| [azuread_app_role_assignment.app_role_assignment](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/app_role_assignment) | resource |
+| [azuread_app_role_assignment.main_app](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/app_role_assignment) | resource |
 | [azuread_app_role_assignment.service_apps](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/app_role_assignment) | resource |
-| [azuread_application.app](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application) | resource |
-| [azuread_application.service_apps](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application) | resource |
-| [azuread_application_password.app_client_secret](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application_password) | resource |
-| [azuread_application_password.service_app_client_secrets](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application_password) | resource |
-| [azuread_group.groups](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/group) | resource |
-| [azuread_service_principal.enterprise_app](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal) | resource |
+| [azuread_application.main_app](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application) | resource |
+| [azuread_application_password.main_app](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application_password) | resource |
+| [azuread_application_pre_authorized.known_client_apps](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application_pre_authorized) | resource |
+| [azuread_service_principal.main_app](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal) | resource |
 | [azuread_service_principal.msgraph](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal) | resource |
-| [azuread_service_principal.service_enterprise_apps](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal) | resource |
-| [random_uuid.app_uri](https://registry.terraform.io/providers/hashicorp/random/3.1.0/docs/resources/uuid) | resource |
+| [random_uuid.app_scope](https://registry.terraform.io/providers/hashicorp/random/3.1.0/docs/resources/uuid) | resource |
 | [random_uuid.role_uuid](https://registry.terraform.io/providers/hashicorp/random/3.1.0/docs/resources/uuid) | resource |
+| [azuread_application.service_apps](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/application) | data source |
+| [azuread_application.spa_apps](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/application) | data source |
 | [azuread_application_published_app_ids.well_known](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/application_published_app_ids) | data source |
 | [azuread_client_config.current](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/client_config) | data source |
-| [azuread_user.owner](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/user) | data source |
+| [azuread_group.groups](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/group) | data source |
+| [azuread_service_principal.service_apps](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/service_principal) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_api_apps"></a> [api\_apps](#input\_api\_apps) | The names of the backend API apps if you are creating a frontend spa app | `list(string)` | `[]` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment of Azure app. | `string` | n/a | yes |
-| <a name="input_group_roles_assignment"></a> [group\_roles\_assignment](#input\_group\_roles\_assignment) | Groups + Roles + Assignment to App | <pre>list(object({<br>    name  = string<br>    roles = list(string)<br>  }))</pre> | n/a | yes |
+| <a name="input_group_roles_assignment"></a> [group\_roles\_assignment](#input\_group\_roles\_assignment) | Names of the Groups + Roles + Assignment to App | <pre>list(object({<br>    name  = string<br>    roles = list(string)<br>  }))</pre> | `[]` | no |
 | <a name="input_homepage_url"></a> [homepage\_url](#input\_homepage\_url) | (Optional) Home page or landing page of the application | `string` | `null` | no |
 | <a name="input_logout_url"></a> [logout\_url](#input\_logout\_url) | (Optional) The URL that will be used to sign out a user | `string` | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name of application using the Azure app. | `string` | n/a | yes |
-| <a name="input_owners"></a> [owners](#input\_owners) | The email of the owners of this application | `list(string)` | n/a | yes |
-| <a name="input_redirect_uris"></a> [redirect\_uris](#input\_redirect\_uris) | The redirect URIs where OAuth 2.0 authorization codes and access tokens are sent | `list(string)` | `null` | no |
-| <a name="input_service_app_roles_assignment"></a> [service\_app\_roles\_assignment](#input\_service\_app\_roles\_assignment) | Service Apps + Roles | <pre>list(object({<br>    name  = string<br>    roles = list(string)<br>  }))</pre> | n/a | yes |
+| <a name="input_redirect_uris"></a> [redirect\_uris](#input\_redirect\_uris) | The redirect URIs where OAuth 2.0 authorization codes and access tokens are sent | `list(string)` | `[]` | no |
+| <a name="input_service_app_roles_assignment"></a> [service\_app\_roles\_assignment](#input\_service\_app\_roles\_assignment) | Names of the external Azure AD apps + Roles | <pre>list(object({<br>    name  = string<br>    roles = list(string)<br>  }))</pre> | `[]` | no |
+| <a name="input_spa_apps"></a> [spa\_apps](#input\_spa\_apps) | The names of the frontend spa app if you are creating a backend api app | `list(string)` | `[]` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags (user + octopus) to assign to all resources | `map(string)` | n/a | yes |
 
 ## Outputs
@@ -64,10 +65,7 @@ No modules.
 | <a name="output_app"></a> [app](#output\_app) | Azure App details |
 | <a name="output_app_aws_secrets_arn"></a> [app\_aws\_secrets\_arn](#output\_app\_aws\_secrets\_arn) | The Amazon Secret Manager ARN of the Azure app's secrets. |
 | <a name="output_app_aws_secrets_name"></a> [app\_aws\_secrets\_name](#output\_app\_aws\_secrets\_name) | The Amazon Secret Manager name of the Azure app's secrets. |
-| <a name="output_app_group_links"></a> [app\_group\_links](#output\_app\_group\_links) | Direct Links for the security groups for the Azure app. |
 | <a name="output_app_name"></a> [app\_name](#output\_app\_name) | Azure App display name. |
-| <a name="output_application_id_uri"></a> [application\_id\_uri](#output\_application\_id\_uri) | The Application ID URI of the Azure application. |
 | <a name="output_client_id"></a> [client\_id](#output\_client\_id) | The Application(client) ID of the Azure application. |
 | <a name="output_object_id"></a> [object\_id](#output\_object\_id) | Azure App Id. |
-| <a name="output_service_apps_client_id"></a> [service\_apps\_client\_id](#output\_service\_apps\_client\_id) | The Application(client) ID of the Azure service applications. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
