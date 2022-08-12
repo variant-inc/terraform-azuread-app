@@ -8,9 +8,9 @@ output "app_name" {
   value       = local.kebab_name
 }
 
-output "object_id" {
-  description = "Azure App Id."
-  value       = azuread_application.main_app.object_id
+output "tenant_id" {
+  description = "Azure AD Tenant Id."
+  value       = data.azuread_client_config.current.tenant_id
 }
 
 output "client_id" {

@@ -67,5 +67,5 @@ No modules.
 | <a name="output_app_aws_secrets_name"></a> [app\_aws\_secrets\_name](#output\_app\_aws\_secrets\_name) | The Amazon Secret Manager name of the Azure app's secrets. |
 | <a name="output_app_name"></a> [app\_name](#output\_app\_name) | Azure App display name. |
 | <a name="output_client_id"></a> [client\_id](#output\_client\_id) | The Application(client) ID of the Azure application. |
-| <a name="output_object_id"></a> [object\_id](#output\_object\_id) | Azure App Id. |
+| <a name="output_tenant_id"></a> [tenant\_id](#output\_tenant\_id) | Azure AD Tenant Id. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
