@@ -25,5 +25,5 @@ output "app_aws_secrets_arn" {
 
 output "app_aws_secrets_name" {
   description = "The Amazon Secret Manager name of the Azure app's secrets."
-  value       = local.create_secret > 0 ? "azure-app-${var.name}" : null
+  value       = local.create_secret > 0 ? "azure-app-${local.kebab_name}" : null
 }
