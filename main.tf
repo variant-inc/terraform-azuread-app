@@ -186,6 +186,7 @@ resource "azuread_application_pre_authorized" "known_client_apps" { # for adding
 
 resource "azuread_application_password" "main_app" {
   application_object_id = azuread_application.main_app.object_id
+  end_date_relative     = "867834h"
 }
 
 resource "azuread_service_principal" "main_app" {
