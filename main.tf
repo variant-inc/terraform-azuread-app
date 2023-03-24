@@ -229,16 +229,16 @@ resource "aws_secretsmanager_secret_version" "app_secret_version" {
   count     = local.create_secret
   secret_id = aws_secretsmanager_secret.app_secrets[0].id
   secret_string = (local.type_of_app == "spa_app") ? jsonencode({
-    "callback_url" : var.redirect_uris,
-    "auth_url" : "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/v2.0/authorize",
-    "access_token_url" : "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/v2.0/token",
-    "client_id" : azuread_application.main_app.application_id,
-    "client_secret" : azuread_application_password.main_app.value
-    "scope" : concat(["open_id", "profile", "email"], var.api_apps != null ? [for app_name in var.api_apps : format("api://%s", app_name)] : []) # adding backend api app scopes only if they are supplied
+    "AUTH__callback_url" : var.redirect_uris,
+    "AUTH__auth_url" : "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/v2.0/authorize",
+    "AUTH__access_token_url" : "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/v2.0/token",
+    "AUTH__client_id" : azuread_application.main_app.application_id,
+    "AUTH__client_secret" : azuread_application_password.main_app.value
+    "AUTH__scope" : concat(["open_id", "profile", "email"], var.api_apps != null ? [for app_name in var.api_apps : format("api://%s", app_name)] : []) # adding backend api app scopes only if they are supplied
     }) : jsonencode({
-    "client_id" : azuread_application.main_app.application_id,
-    "client_secret" : azuread_application_password.main_app.value,
-    "access_token_url" : "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/token",
-    "resources" : { for a, b in local.service_app_assignment : a => format("api://%s", b.app) }
+    "AUTH__client_id" : azuread_application.main_app.application_id,
+    "AUTH__client_secret" : azuread_application_password.main_app.value,
+    "AUTH__access_token_url" : "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/token",
+    "AUTH__resources" : { for a, b in local.service_app_assignment : a => format("api://%s", b.app) }
   })
 }
