@@ -36,8 +36,8 @@ No modules.
 | [azuread_service_principal.msgraph](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal) | resource |
 | [random_uuid.app_scope](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/uuid) | resource |
 | [random_uuid.role_uuid](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/uuid) | resource |
+| [azuread_application.api_apps](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/application) | data source |
 | [azuread_application.service_apps](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/application) | data source |
-| [azuread_application.spa_apps](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/application) | data source |
 | [azuread_application_published_app_ids.well_known](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/application_published_app_ids) | data source |
 | [azuread_client_config.current](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/client_config) | data source |
 | [azuread_group.groups](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/group) | data source |
@@ -54,9 +54,9 @@ No modules.
 | <a name="input_logout_url"></a> [logout\_url](#input\_logout\_url) | (Optional) The URL that will be used to sign out a user | `string` | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name of application using the Azure app. | `string` | n/a | yes |
 | <a name="input_redirect_uris"></a> [redirect\_uris](#input\_redirect\_uris) | The redirect URIs where OAuth 2.0 authorization codes and access tokens are sent | `list(string)` | `[]` | no |
-| <a name="input_service_app_roles_assignment"></a> [service\_app\_roles\_assignment](#input\_service\_app\_roles\_assignment) | Names of the external Azure AD apps + Roles | <pre>list(object({<br>    name  = string<br>    roles = list(string)<br>  }))</pre> | `[]` | no |
-| <a name="input_spa_apps"></a> [spa\_apps](#input\_spa\_apps) | The names of the frontend spa app if you are creating a backend api app | `list(string)` | `[]` | no |
+| <a name="input_service_app_roles_assignment"></a> [service\_app\_roles\_assignment](#input\_service\_app\_roles\_assignment) | Names of the external Azure AD apps + Roles that this app needs access to | <pre>list(object({<br>    name  = string<br>    roles = list(string)<br>  }))</pre> | `[]` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags (user + octopus) to assign to all resources | `map(string)` | n/a | yes |
+| <a name="input_type"></a> [type](#input\_type) | Type of Azure app. Either a SPA or API app | `string` | n/a | yes |
 
 ## Outputs
 
