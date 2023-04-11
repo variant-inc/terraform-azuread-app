@@ -4,7 +4,7 @@ variable "name" {
 }
 
 variable "type" {
-  description = "Type of Azure app. Either a SPA or API app"
+  description = "Type of Azure app. Either a spa or api app"
   type        = string
 }
 

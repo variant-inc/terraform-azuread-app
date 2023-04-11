@@ -56,14 +56,13 @@ No modules.
 | <a name="input_redirect_uris"></a> [redirect\_uris](#input\_redirect\_uris) | The redirect URIs where OAuth 2.0 authorization codes and access tokens are sent | `list(string)` | `[]` | no |
 | <a name="input_service_app_roles_assignment"></a> [service\_app\_roles\_assignment](#input\_service\_app\_roles\_assignment) | Names of the external Azure AD apps + Roles that this app needs access to | <pre>list(object({<br>    name  = string<br>    roles = list(string)<br>  }))</pre> | `[]` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags (user + octopus) to assign to all resources | `map(string)` | n/a | yes |
-| <a name="input_type"></a> [type](#input\_type) | Type of Azure app. Either a SPA or API app | `string` | n/a | yes |
+| <a name="input_type"></a> [type](#input\_type) | Type of Azure app. Either a spa or api app | `string` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
 | <a name="output_app"></a> [app](#output\_app) | Azure App details |
-| <a name="output_app_aws_secrets_arn"></a> [app\_aws\_secrets\_arn](#output\_app\_aws\_secrets\_arn) | The Amazon Secret Manager ARN of the Azure app's secrets. |
 | <a name="output_app_aws_secrets_name"></a> [app\_aws\_secrets\_name](#output\_app\_aws\_secrets\_name) | The Amazon Secret Manager name of the Azure app's secrets. |
 | <a name="output_app_name"></a> [app\_name](#output\_app\_name) | Azure App display name. |
 | <a name="output_client_id"></a> [client\_id](#output\_client\_id) | The Application(client) ID of the Azure application. |
