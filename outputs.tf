@@ -18,12 +18,7 @@ output "client_id" {
   value       = azuread_application.main_app.application_id
 }
 
-output "app_aws_secrets_arn" {
-  description = "The Amazon Secret Manager ARN of the Azure app's secrets."
-  value       = local.create_secret > 0 ? aws_secretsmanager_secret_version.app_secret_version[0].arn : null
-}
-
 output "app_aws_secrets_name" {
   description = "The Amazon Secret Manager name of the Azure app's secrets."
-  value       = local.create_secret > 0 ? "azure-app-${local.kebab_name}" : null
+  value       = "azure-app-${local.kebab_name}"
 }

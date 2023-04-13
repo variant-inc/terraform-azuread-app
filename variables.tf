@@ -3,6 +3,11 @@ variable "name" {
   type        = string
 }
 
+variable "type" {
+  description = "Type of Azure app. Either a spa or api app"
+  type        = string
+}
+
 variable "environment" {
   description = "Environment of Azure app."
   type        = string
@@ -23,18 +28,12 @@ variable "group_roles_assignment" {
 }
 
 variable "service_app_roles_assignment" {
-  description = "Names of the external Azure AD apps + Roles"
+  description = "Names of the external Azure AD apps + Roles that this app needs access to"
   type = list(object({
     name  = string
     roles = list(string)
   }))
   default = []
-}
-
-variable "spa_apps" {
-  description = "The names of the frontend spa app if you are creating a backend api app"
-  type        = list(string)
-  default     = []
 }
 
 variable "api_apps" {
