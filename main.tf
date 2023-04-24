@@ -242,16 +242,15 @@ resource "aws_secretsmanager_secret_version" "app_secret_version" {
     "AUTH__access_token_url" = "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/v2.0/token"
     "AUTH__client_id"        = azuread_application.main_app.application_id
     "AUTH__client_secret"    = azuread_application_password.main_app.value
-    "AUTH__scope"            = concat(["open_id", "profile", "email"], var.api_apps != null ? [for app_name in var.api_apps : format("api://%s", app_name)] : []) # adding backend api app scopes only if they are supplied
-    }) : jsonencode({                                                                                                                                             # if we have service to service calls
+    "AUTH__scope"            = concat(["openid", "profile", "email"], var.api_apps != null ? [for app_name in var.api_apps : format("api://%s/user_impersonation", app_name)] : []) # adding backend api app scopes only if they are supplied
+    }) : jsonencode({                                                                                                                                                               # if we have service to service calls
     "AUTH__callback_url"                                 = var.redirect_uris
     "AUTH__auth_url"                                     = "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/v2.0/authorize"
     "AUTH__access_token_url"                             = "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/v2.0/token"
     "AUTH__client_id"                                    = azuread_application.main_app.application_id
     "AUTH__client_secret"                                = azuread_application_password.main_app.value
-    "AUTH__scope"                                        = concat(["open_id", "profile", "email"], var.api_apps != null ? [for app_name in var.api_apps : format("api://%s/user_impersonation", app_name)] : []) # adding backend api app scopes only if they are supplied
+    "AUTH__scope"                                        = ["openid", "profile", "email"]
     "AUTH__resources"                                    = { for a, b in local.service_app_assignment : a => format("api://%s", b.app) }
     "AUTH__access_token_url_for_client_credentials_flow" = "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/token"
   })
-
 }
