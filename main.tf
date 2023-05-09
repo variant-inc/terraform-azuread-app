@@ -1,5 +1,5 @@
 locals {
-  kebab_name = "${var.environment}-${var.name}"
+  kebab_name = "dx-${var.environment}-${var.name}"
 
   distinct_roles = distinct(
     flatten(
