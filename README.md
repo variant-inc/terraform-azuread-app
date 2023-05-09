@@ -1,4 +1,7 @@
 # Azure AD SPA App
+
+<!-- markdownlint-disable MD033 MD013 MD041 -->
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
