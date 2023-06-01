@@ -199,13 +199,12 @@ resource "azuread_application" "main_app" {
   }
 }
 
-# Todo: Revert comments after permissions have been provided
-# # Grant Admin access for delegates
-# resource "azuread_service_principal_delegated_permission_grant" "example" {
-#   service_principal_object_id          = azuread_service_principal.main_app.object_id
-#   resource_service_principal_object_id = azuread_service_principal.msgraph.object_id
-#   claim_values                         = ["Group.Read.All"]
-# }
+# Grant Admin access for delegates
+resource "azuread_service_principal_delegated_permission_grant" "example" {
+  service_principal_object_id          = azuread_service_principal.main_app.object_id
+  resource_service_principal_object_id = azuread_service_principal.msgraph.object_id
+  claim_values                         = ["Group.Read.All"]
+}
 
 # for adding spa client app to the api app
 resource "azuread_application_pre_authorized" "known_client_apps" {
