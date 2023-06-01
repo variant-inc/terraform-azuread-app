@@ -66,6 +66,34 @@ locals {
     "Group.Read.All" : true,
     "offline_access" : true
   }
+
+  optional_claims = [
+    "acct",
+    "auth_time",
+    "ctry",
+    "email",
+    "family_name",
+    "fwd",
+    "given_name",
+    "in_corp",
+    "ipaddr",
+    "login_hint",
+    "onprem_sid",
+    "preferred_username",
+    "pwd_exp",
+    "pwd_url",
+    "sid",
+    "tenant_ctry",
+    "tenant_region_scope",
+    "upn",
+    "verified_primary_email",
+    "verified_secondary_email",
+    "vnet",
+    "xms_pdl",
+    "xms_pl",
+    "xms_tpl",
+    "ztdid"
+  ]
 }
 
 resource "random_uuid" "role_uuid" {
@@ -110,9 +138,10 @@ resource "azuread_service_principal" "msgraph" {
 
 resource "azuread_application" "main_app" {
 
-  display_name    = local.kebab_name
-  identifier_uris = ["api://${local.kebab_name}"]
-  owners          = [data.azuread_client_config.current.object_id]
+  display_name            = local.kebab_name
+  identifier_uris         = ["api://${local.kebab_name}"]
+  owners                  = [data.azuread_client_config.current.object_id]
+  group_membership_claims = ["All"]
 
   api {
     mapped_claims_enabled          = true
@@ -142,6 +171,35 @@ resource "azuread_application" "main_app" {
     }
   }
 
+  optional_claims {
+    dynamic "access_token" {
+      for_each = toset(local.optional_claims)
+      content {
+        name = access_token.value
+      }
+    }
+    access_token {
+      name = "groups"
+      additional_properties = [
+        "cloud_displayname",
+        "sam_account_name"
+      ]
+    }
+    dynamic "id_token" {
+      for_each = toset(local.optional_claims)
+      content {
+        name = id_token.value
+      }
+    }
+    id_token {
+      name = "groups"
+      additional_properties = [
+        "cloud_displayname",
+        "sam_account_name"
+      ]
+    }
+  }
+
   required_resource_access {
     # Microsoft Graph
     resource_app_id = azuread_service_principal.msgraph.application_id
@@ -160,9 +218,12 @@ resource "azuread_application" "main_app" {
     content {
       resource_app_id = data.azuread_application.api_apps[required_resource_access.key].application_id
 
-      resource_access {
-        id   = data.azuread_application.api_apps[required_resource_access.key].oauth2_permission_scope_ids["user_impersonation"]
-        type = "Scope"
+      dynamic "resource_access" {
+        for_each = values(data.azuread_application.api_apps[required_resource_access.key].oauth2_permission_scope_ids)
+        content {
+          id   = resource_access.value
+          type = "Scope"
+        }
       }
     }
   }
@@ -217,7 +278,7 @@ resource "azuread_application_pre_authorized" "known_client_apps" {
   authorized_app_id = azuread_application.main_app.application_id
 
   # permission scope IDs required by the authorized application
-  permission_ids = [data.azuread_application.api_apps[each.key].oauth2_permission_scope_ids["user_impersonation"]]
+  permission_ids = values(data.azuread_application.api_apps[each.key].oauth2_permission_scope_ids)
 }
 
 resource "azuread_application_password" "main_app" {
@@ -260,7 +321,9 @@ resource "azuread_app_role_assignment" "main_app" {
 }
 
 resource "aws_secretsmanager_secret" "app_secrets" {
-  name = "azure-app-${local.kebab_name}"
+  name                           = "azure-app-${local.kebab_name}"
+  recovery_window_in_days        = 0
+  force_overwrite_replica_secret = true
 }
 
 resource "aws_secretsmanager_secret_version" "app_secret_version" {
