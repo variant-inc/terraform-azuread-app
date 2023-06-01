@@ -57,6 +57,15 @@ locals {
   admin_grant_roles = { for i in local.s_a : "${i.app}-${i.role}" => i }
 
   api_apps = { for app in var.api_apps : app => app }
+
+  ms_graph_scopes = {
+    "openid" : true,
+    "email" : true,
+    "profile" : true,
+    "User.Read" : true,
+    "Group.Read.All" : true,
+    "offline_access" : true
+  }
 }
 
 resource "random_uuid" "role_uuid" {
@@ -66,7 +75,8 @@ resource "random_uuid" "role_uuid" {
 resource "random_uuid" "app_scope" {
 }
 
-data "azuread_group" "groups" { # for exporting the groups provided in the variables
+# for exporting the groups provided in the variables
+data "azuread_group" "groups" {
   for_each     = local.groups
   display_name = each.key
 }
@@ -75,17 +85,20 @@ data "azuread_application_published_app_ids" "well_known" {}
 
 data "azuread_client_config" "current" {}
 
-data "azuread_application" "api_apps" { # for exporting the api_apps information
+# for exporting the api_apps information
+data "azuread_application" "api_apps" {
   for_each     = local.api_apps
   display_name = each.key
 }
 
-data "azuread_application" "service_apps" { # for exporting the service apps information
+# for exporting the service apps information
+data "azuread_application" "service_apps" {
   for_each     = local.service_app_assignment
   display_name = each.key
 }
 
-data "azuread_service_principal" "service_apps" { # for exporting the service_apps service principle information
+# for exporting the service_apps service principle information
+data "azuread_service_principal" "service_apps" {
   for_each     = local.service_app_assignment
   display_name = each.key
 }
@@ -130,25 +143,19 @@ resource "azuread_application" "main_app" {
   }
 
   required_resource_access {
-    resource_app_id = azuread_service_principal.msgraph.application_id # Microsoft Graph
-
-    resource_access {
-      id   = azuread_service_principal.msgraph.oauth2_permission_scope_ids["openid"]
-      type = "Scope"
-    }
-
-    resource_access {
-      id   = azuread_service_principal.msgraph.oauth2_permission_scope_ids["email"]
-      type = "Scope"
-    }
-
-    resource_access {
-      id   = azuread_service_principal.msgraph.oauth2_permission_scope_ids["profile"]
-      type = "Scope"
+    # Microsoft Graph
+    resource_app_id = azuread_service_principal.msgraph.application_id
+    dynamic "resource_access" {
+      for_each = local.ms_graph_scopes
+      content {
+        id   = azuread_service_principal.msgraph.oauth2_permission_scope_ids[resource_access.key]
+        type = "Scope"
+      }
     }
   }
 
-  dynamic "required_resource_access" { # for adding permissions to the spa app for accessing web api
+  # for adding permissions to the spa app for accessing web api
+  dynamic "required_resource_access" {
     for_each = local.api_apps
     content {
       resource_app_id = data.azuread_application.api_apps[required_resource_access.key].application_id
@@ -160,7 +167,8 @@ resource "azuread_application" "main_app" {
     }
   }
 
-  dynamic "required_resource_access" { # for service to service calls
+  # for service to service calls
+  dynamic "required_resource_access" {
     for_each = local.service_app_assignment
     content {
       resource_app_id = data.azuread_application.service_apps[required_resource_access.key].application_id
@@ -191,11 +199,26 @@ resource "azuread_application" "main_app" {
   }
 }
 
-resource "azuread_application_pre_authorized" "known_client_apps" { # for adding spa client app to the api app
-  for_each              = local.api_apps
-  application_object_id = data.azuread_application.api_apps[each.key].object_id                                           # object id of the app for which permissions are authorized
-  authorized_app_id     = azuread_application.main_app.application_id                                                     # client id of the application being authorized
-  permission_ids        = [data.azuread_application.api_apps[each.key].oauth2_permission_scope_ids["user_impersonation"]] # permission scope IDs required by the authorized application
+# Todo: Revert comments after permissions have been provided
+# # Grant Admin access for delegates
+# resource "azuread_service_principal_delegated_permission_grant" "example" {
+#   service_principal_object_id          = azuread_service_principal.main_app.object_id
+#   resource_service_principal_object_id = azuread_service_principal.msgraph.object_id
+#   claim_values                         = ["Group.Read.All"]
+# }
+
+# for adding spa client app to the api app
+resource "azuread_application_pre_authorized" "known_client_apps" {
+  for_each = local.api_apps
+
+  # object id of the app for which permissions are authorized
+  application_object_id = data.azuread_application.api_apps[each.key].object_id
+
+  # client id of the application being authorized
+  authorized_app_id = azuread_application.main_app.application_id
+
+  # permission scope IDs required by the authorized application
+  permission_ids = [data.azuread_application.api_apps[each.key].oauth2_permission_scope_ids["user_impersonation"]]
 }
 
 resource "azuread_application_password" "main_app" {
@@ -214,14 +237,22 @@ resource "azuread_service_principal" "main_app" {
   }
 }
 
-resource "azuread_app_role_assignment" "service_apps" { # for granting the admin consent for service to service authentication
-  for_each            = local.admin_grant_roles
-  app_role_id         = data.azuread_application.service_apps[each.value.app].app_role_ids[each.value.role] # roles from the application which this app needs access to
-  principal_object_id = azuread_service_principal.main_app.object_id                                        # service principal object_id of main app
-  resource_object_id  = data.azuread_service_principal.service_apps[each.value.app].object_id               # service principle of the application which this app needs access to
+# for granting the admin consent for service to service authentication
+resource "azuread_app_role_assignment" "service_apps" {
+  for_each = local.admin_grant_roles
+
+  # roles from the application which this app needs access to
+  app_role_id = data.azuread_application.service_apps[each.value.app].app_role_ids[each.value.role]
+
+  # service principal object_id of main app
+  principal_object_id = azuread_service_principal.main_app.object_id
+
+  # service principle of the application which this app needs access to
+  resource_object_id = data.azuread_service_principal.service_apps[each.value.app].object_id
 }
 
-resource "azuread_app_role_assignment" "main_app" { # for assigning app roles to the provided groups
+# for assigning app roles to the provided groups
+resource "azuread_app_role_assignment" "main_app" {
   for_each = local.groups_assignment
 
   app_role_id         = azuread_application.main_app.app_role_ids[each.value.role]
@@ -231,26 +262,17 @@ resource "azuread_app_role_assignment" "main_app" { # for assigning app roles to
 
 resource "aws_secretsmanager_secret" "app_secrets" {
   name = "azure-app-${local.kebab_name}"
-  tags = var.tags
 }
 
 resource "aws_secretsmanager_secret_version" "app_secret_version" {
   secret_id = aws_secretsmanager_secret.app_secrets.id
-  secret_string = length(var.service_app_roles_assignment) == 0 ? jsonencode({
-    "AUTH__callback_url"     = var.redirect_uris
-    "AUTH__auth_url"         = "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/v2.0/authorize"
-    "AUTH__access_token_url" = "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/v2.0/token"
-    "AUTH__client_id"        = azuread_application.main_app.application_id
-    "AUTH__client_secret"    = azuread_application_password.main_app.value
-    "AUTH__scope"            = concat(["openid", "profile", "email"], var.api_apps != null ? [for app_name in var.api_apps : format("api://%s/user_impersonation", app_name)] : []) # adding backend api app scopes only if they are supplied
-    }) : jsonencode({                                                                                                                                                               # if we have service to service calls
-    "AUTH__callback_url"                                 = var.redirect_uris
-    "AUTH__auth_url"                                     = "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/v2.0/authorize"
-    "AUTH__access_token_url"                             = "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/v2.0/token"
-    "AUTH__client_id"                                    = azuread_application.main_app.application_id
-    "AUTH__client_secret"                                = azuread_application_password.main_app.value
-    "AUTH__scope"                                        = ["openid", "profile", "email"]
-    "AUTH__resources"                                    = { for a, b in local.service_app_assignment : a => format("api://%s", b.app) }
-    "AUTH__access_token_url_for_client_credentials_flow" = "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/token"
+  secret_string = jsonencode({
+    "AUTH__callback_url"   = jsonencode(var.redirect_uris)
+    "AUTH__issuer_url"     = "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/v2.0"
+    "AUTH__client_id"      = azuread_application.main_app.application_id
+    "AUTH__client_secret"  = azuread_application_password.main_app.value
+    "AUTH__tenant"         = data.azuread_client_config.current.tenant_id
+    "AUTH__scope"          = "openid profile email offline_access"
+    "AUTH__token_endpoint" = "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/token"
   })
 }
