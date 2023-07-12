@@ -64,7 +64,8 @@ locals {
     "profile" : true,
     "User.Read" : true,
     "Group.Read.All" : true,
-    "offline_access" : true
+    "offline_access" : true,
+    "User.Read.All" : true
   }
 
   optional_claims = [
@@ -264,7 +265,7 @@ resource "azuread_application" "main_app" {
 resource "azuread_service_principal_delegated_permission_grant" "example" {
   service_principal_object_id          = azuread_service_principal.main_app.object_id
   resource_service_principal_object_id = azuread_service_principal.msgraph.object_id
-  claim_values                         = ["Group.Read.All"]
+  claim_values                         = ["Group.Read.All", "User.Read.All"]
 }
 
 # for adding spa client app to the api app
