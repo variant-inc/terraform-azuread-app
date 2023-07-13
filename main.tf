@@ -335,7 +335,7 @@ resource "aws_secretsmanager_secret_version" "app_secret_version" {
     "AUTH__client_id"      = azuread_application.main_app.application_id
     "AUTH__client_secret"  = azuread_application_password.main_app.value
     "AUTH__tenant"         = data.azuread_client_config.current.tenant_id
-    "AUTH__scope"          = "openid profile email offline_access"
+    "AUTH__scope"          = join(" ", [for k, v in local.ms_graph_scopes : k])
     "AUTH__token_endpoint" = "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/token"
   })
 }
