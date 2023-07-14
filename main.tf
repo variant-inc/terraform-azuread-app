@@ -58,13 +58,15 @@ locals {
 
   api_apps = { for app in var.api_apps : app => app }
 
+  # false -> non-admin
+  # true -> grant admin access
   ms_graph_scopes = {
-    "openid" : true,
-    "email" : true,
-    "profile" : true,
+    "openid" : false,
+    "email" : false,
+    "profile" : false,
+    "offline_access" : false,
     "User.Read" : true,
     "Group.Read.All" : true,
-    "offline_access" : true,
     "User.Read.All" : true
   }
 
@@ -265,7 +267,7 @@ resource "azuread_application" "main_app" {
 resource "azuread_service_principal_delegated_permission_grant" "example" {
   service_principal_object_id          = azuread_service_principal.main_app.object_id
   resource_service_principal_object_id = azuread_service_principal.msgraph.object_id
-  claim_values                         = ["Group.Read.All", "User.Read.All"]
+  claim_values                         = [for k, v in local.ms_graph_scopes : k if v]
 }
 
 # for adding spa client app to the api app
