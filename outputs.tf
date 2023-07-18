@@ -22,3 +22,11 @@ output "app_aws_secrets_name" {
   description = "The Amazon Secret Manager name of the Azure app's secrets."
   value       = "azure-app-${local.kebab_name}"
 }
+
+output "api_apps_scopes" {
+  description = "The scopes for API Apps"
+  value = {
+    for k, v in data.azuread_application.api_apps :
+    k => join(",", [for x in v.identifier_uris : "${x}/.default"])
+  }
+}

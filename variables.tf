@@ -27,15 +27,6 @@ variable "group_roles_assignment" {
   default = []
 }
 
-variable "service_app_roles_assignment" {
-  description = "Names of the external Azure AD apps + Roles that this app needs access to"
-  type = list(object({
-    name  = string
-    roles = list(string)
-  }))
-  default = []
-}
-
 variable "api_apps" {
   description = "The names of the backend API apps if you are creating a frontend spa app"
   type        = list(string)

@@ -36,26 +36,6 @@ locals {
     x => x
   }
 
-  service_app_assignment = {
-    for i in var.service_app_roles_assignment : i.name => ({
-      app = i.name
-    roles = ({ for role in i.roles : role => role }) })
-  }
-
-
-  s_a = flatten([
-    for app in var.service_app_roles_assignment : [
-      for r in app.roles : ([
-        {
-          app  = app.name
-          role = r
-        }
-      ])
-    ]
-  ])
-
-  admin_grant_roles = { for i in local.s_a : "${i.app}-${i.role}" => i }
-
   api_apps = { for app in var.api_apps : app => app }
 
   # false -> non-admin
@@ -119,18 +99,6 @@ data "azuread_client_config" "current" {}
 # for exporting the api_apps information
 data "azuread_application" "api_apps" {
   for_each     = local.api_apps
-  display_name = each.key
-}
-
-# for exporting the service apps information
-data "azuread_application" "service_apps" {
-  for_each     = local.service_app_assignment
-  display_name = each.key
-}
-
-# for exporting the service_apps service principle information
-data "azuread_service_principal" "service_apps" {
-  for_each     = local.service_app_assignment
   display_name = each.key
 }
 
@@ -231,22 +199,6 @@ resource "azuread_application" "main_app" {
     }
   }
 
-  # for service to service calls
-  dynamic "required_resource_access" {
-    for_each = local.service_app_assignment
-    content {
-      resource_app_id = data.azuread_application.service_apps[required_resource_access.key].application_id
-
-      dynamic "resource_access" {
-        for_each = required_resource_access.value.roles
-        content {
-          id   = data.azuread_application.service_apps[required_resource_access.key].app_role_ids[resource_access.key]
-          type = "Role"
-        }
-      }
-    }
-  }
-
   single_page_application {
     redirect_uris = var.type == "spa" ? var.redirect_uris : []
   }
@@ -264,7 +216,7 @@ resource "azuread_application" "main_app" {
 }
 
 # Grant Admin access for delegates
-resource "azuread_service_principal_delegated_permission_grant" "example" {
+resource "azuread_service_principal_delegated_permission_grant" "access" {
   service_principal_object_id          = azuread_service_principal.main_app.object_id
   resource_service_principal_object_id = azuread_service_principal.msgraph.object_id
   claim_values                         = [for k, v in local.ms_graph_scopes : k if v]
@@ -298,20 +250,6 @@ resource "azuread_service_principal" "main_app" {
   feature_tags {
     enterprise = true
   }
-}
-
-# for granting the admin consent for service to service authentication
-resource "azuread_app_role_assignment" "service_apps" {
-  for_each = local.admin_grant_roles
-
-  # roles from the application which this app needs access to
-  app_role_id = data.azuread_application.service_apps[each.value.app].app_role_ids[each.value.role]
-
-  # service principal object_id of main app
-  principal_object_id = azuread_service_principal.main_app.object_id
-
-  # service principle of the application which this app needs access to
-  resource_object_id = data.azuread_service_principal.service_apps[each.value.app].object_id
 }
 
 # for assigning app roles to the provided groups
