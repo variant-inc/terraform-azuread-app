@@ -270,12 +270,12 @@ resource "aws_secretsmanager_secret" "app_secrets" {
 resource "aws_secretsmanager_secret_version" "app_secret_version" {
   secret_id = aws_secretsmanager_secret.app_secrets.id
   secret_string = jsonencode({
-    "AUTH__callback_url"   = jsonencode(var.redirect_uris)
-    "AUTH__issuer_url"     = "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/v2.0"
-    "AUTH__client_id"      = azuread_application.main_app.application_id
-    "AUTH__client_secret"  = azuread_application_password.main_app.value
-    "AUTH__tenant"         = data.azuread_client_config.current.tenant_id
-    "AUTH__scopes"         = join(" ", [for k, v in local.ms_graph_scopes : k])
-    "AUTH__token_endpoint" = "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/token"
+    "AUTH__CallbackUrl"   = jsonencode(var.redirect_uris)
+    "AUTH__IssuerUrl"     = "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/v2.0"
+    "AUTH__ClientId"      = azuread_application.main_app.application_id
+    "AUTH__ClientSecret"  = azuread_application_password.main_app.value
+    "AUTH__TenantId"         = data.azuread_client_config.current.tenant_id
+    "AUTH__Scopes"         = join(" ", [for k, v in local.ms_graph_scopes : k])
+    "AUTH__TokenEndpoint" = "https://login.microsoftonline.com/${data.azuread_client_config.current.tenant_id}/oauth2/token"
   })
 }
