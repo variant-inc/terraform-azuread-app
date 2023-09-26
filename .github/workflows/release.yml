@@ -8,6 +8,9 @@ on:  # yamllint disable-line rule:truthy
       - master
       - main
 
+permissions: read-all
+
+
 jobs:
   Release:
     permissions:
