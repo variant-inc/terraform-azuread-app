@@ -1,48 +1,46 @@
 ---
 repos:
   - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.79.0
+    rev: v1.83.4
     hooks:
       - id: terraform_fmt
+        args:
+          - --args=-diff
+          - --args=-write=true
       - id: terraform_docs
+        args:
+          - --args=--hide-empty
+          - --args=--hide providers
+      - id: terraform_tfsec
+      - id: terraform_checkov
+        args:
+          - --args=--quiet
       - id: terraform_tflint
         args:
-          - --args=--only=terraform_deprecated_interpolation
-          - --args=--only=terraform_deprecated_index
-          - --args=--only=terraform_unused_declarations
-          - --args=--only=terraform_comment_syntax
-          - --args=--only=terraform_documented_outputs
-          - --args=--only=terraform_documented_variables
-          - --args=--only=terraform_typed_variables
-          - --args=--only=terraform_module_pinned_source
-          - --args=--only=terraform_naming_convention
-          - --args=--only=terraform_required_version
-          - --args=--only=terraform_required_providers
-          - --args=--only=terraform_standard_module_structure
-          - --args=--only=terraform_workspace_remote
+          - --args=--config=__GIT_WORKING_DIR__/.tflint.hcl
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-yaml
+      - id: sort-simple-yaml
       - id: check-shebang-scripts-are-executable
       - id: check-case-conflict
+      - id: check-json
+      - id: pretty-format-json
+        args:
+          - "--autofix"
   - repo: https://github.com/lovesegfault/beautysh
     rev: v6.2.1
     hooks:
       - id: beautysh
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.34.0
+    rev: v0.37.0
     hooks:
       - id: markdownlint
-  - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
-    rev: 0.2.3
-    hooks:
-      - id: yamlfmt
-        args: [--mapping, '2', --sequence, '4', --offset, '2']
   - repo: https://github.com/adrienverge/yamllint
-    rev: v1.31.0
+    rev: v1.32.0
     hooks:
       - id: yamllint
         args: [--format, parsable, --strict]
