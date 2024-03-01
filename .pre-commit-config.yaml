@@ -11,7 +11,7 @@ repos:
         args:
           - --args=--hide-empty
           - --args=--hide providers
-      - id: terraform_tfsec
+      - id: terraform_trivy
       - id: terraform_checkov
         args:
           - --args=--quiet

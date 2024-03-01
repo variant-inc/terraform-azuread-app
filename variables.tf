@@ -19,7 +19,7 @@ variable "tags" {
 }
 
 variable "group_roles_assignment" {
-  description = " Names of the Groups + Roles Assignment to App"
+  description = "Names of the Groups + Roles Assignment to App"
   type = list(object({
     name  = string
     roles = list(string)
@@ -28,7 +28,7 @@ variable "group_roles_assignment" {
 }
 
 variable "app_roles_assignment" {
-  description = " Names of the Apps + Roles Assignment to App"
+  description = "Names of the Apps + Roles Assignment to App"
   type = list(object({
     name  = string
     roles = list(string)
