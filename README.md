@@ -19,7 +19,12 @@
 | [aws_secretsmanager_secret.app_secrets](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret) | resource |
 | [aws_secretsmanager_secret_version.app_secret_version](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret_version) | resource |
 | [azuread_app_role_assignment.main_app](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/app_role_assignment) | resource |
+| [azuread_app_role_assignment.role_access_for_other_api](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/app_role_assignment) | resource |
 | [azuread_application.main_app](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application) | resource |
+| [azuread_application_api_access.role_access_for_other_api](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application_api_access) | resource |
+| [azuread_application_api_access.scope_access_to_api](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application_api_access) | resource |
+| [azuread_application_api_access.scope_ms_graph](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application_api_access) | resource |
+| [azuread_application_app_role.app_roles](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application_app_role) | resource |
 | [azuread_application_password.main_app](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application_password) | resource |
 | [azuread_application_pre_authorized.known_client_apps](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application_pre_authorized) | resource |
 | [azuread_service_principal.main_app](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal) | resource |
@@ -28,17 +33,20 @@
 | [random_uuid.app_scope](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/uuid) | resource |
 | [random_uuid.role_uuid](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/uuid) | resource |
 | [azuread_application.api_apps](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/application) | data source |
+| [azuread_application.apps_assignment](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/application) | data source |
 | [azuread_application_published_app_ids.well_known](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/application_published_app_ids) | data source |
 | [azuread_client_config.current](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/client_config) | data source |
 | [azuread_group.groups](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/group) | data source |
+| [azuread_service_principal.apps_assignment](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/service_principal) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_api_apps"></a> [api\_apps](#input\_api\_apps) | The names of the backend API apps if you are creating a frontend spa app | `list(string)` | `[]` | no |
+| <a name="input_app_roles_assignment"></a> [app\_roles\_assignment](#input\_app\_roles\_assignment) | Names of the Apps + Roles Assignment to App | <pre>list(object({<br>    name  = string<br>    roles = list(string)<br>  }))</pre> | `[]` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment of Azure app. | `string` | n/a | yes |
-| <a name="input_group_roles_assignment"></a> [group\_roles\_assignment](#input\_group\_roles\_assignment) | Names of the Groups + Roles + Assignment to App | <pre>list(object({<br>    name  = string<br>    roles = list(string)<br>  }))</pre> | `[]` | no |
+| <a name="input_group_roles_assignment"></a> [group\_roles\_assignment](#input\_group\_roles\_assignment) | Names of the Groups + Roles Assignment to App | <pre>list(object({<br>    name  = string<br>    roles = list(string)<br>  }))</pre> | `[]` | no |
 | <a name="input_homepage_url"></a> [homepage\_url](#input\_homepage\_url) | (Optional) Home page or landing page of the application | `string` | `null` | no |
 | <a name="input_logout_url"></a> [logout\_url](#input\_logout\_url) | (Optional) The URL that will be used to sign out a user | `string` | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name of application using the Azure app. | `string` | n/a | yes |

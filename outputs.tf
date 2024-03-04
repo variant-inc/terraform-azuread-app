@@ -15,7 +15,7 @@ output "tenant_id" {
 
 output "client_id" {
   description = "The Application(client) ID of the Azure application."
-  value       = azuread_application.main_app.application_id
+  value       = azuread_application.main_app.client_id
 }
 
 output "app_aws_secrets_name" {

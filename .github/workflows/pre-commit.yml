@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - uses: actions/setup-python@v3
+      - uses: actions/setup-python@v5
       - name: Install pre-commit dependencies
         run: |
           mkdir -p "$HOME/.local/bin"
@@ -35,5 +35,6 @@ jobs:
 
           curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
 
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b $HOME/.local/bin
           pip3 install checkov
-      - uses: pre-commit/action@v3.0.0
+      - uses: pre-commit/action@main
