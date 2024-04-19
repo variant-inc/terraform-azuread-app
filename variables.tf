@@ -38,8 +38,20 @@ variable "app_roles_assignment" {
 
 variable "api_apps" {
   description = "The names of the backend API apps if you are creating a frontend spa app"
-  type        = list(string)
-  default     = []
+  type = list(object({
+    name      = string
+    reference = string
+  }))
+  default = []
+}
+
+variable "assigned_to_apps" {
+  description = "The names of the server API apps that this app needs access to"
+  type = list(object({
+    name      = string
+    reference = string
+  }))
+  default = []
 }
 
 variable "redirect_uris" {

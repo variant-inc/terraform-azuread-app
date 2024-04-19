@@ -1,5 +1,5 @@
 locals {
-  api_apps = { for app in var.api_apps : app => app }
+  api_apps = { for app in var.api_apps : app.name => app }
 }
 
 # for exporting the api_apps information
