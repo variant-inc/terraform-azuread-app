@@ -25,8 +25,14 @@ output "app_aws_secrets_name" {
 
 output "api_apps_scopes" {
   description = "The scopes for API Apps"
-  value = {
-    for k, v in data.azuread_application.api_apps :
-    k => join(",", [for x in v.identifier_uris : "${x}/.default"])
-  }
+  value = merge(
+    concat([
+      for app in var.api_apps : {
+        "AUTH__ApiAppScopes__${app.reference}" = "${data.azuread_application.api_apps[app.name].client_id}/.default"
+      }
+      ], [
+      for app in var.assigned_to_apps : {
+        "AUTH__ApiAppScopes__${app.reference}" = "${data.azuread_application.assigned_to_apps[app.name].client_id}/.default"
+      }
+  ])...)
 }

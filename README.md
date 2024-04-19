@@ -34,6 +34,7 @@
 | [random_uuid.role_uuid](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/uuid) | resource |
 | [azuread_application.api_apps](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/application) | data source |
 | [azuread_application.apps_assignment](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/application) | data source |
+| [azuread_application.assigned_to_apps](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/application) | data source |
 | [azuread_application_published_app_ids.well_known](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/application_published_app_ids) | data source |
 | [azuread_client_config.current](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/client_config) | data source |
 | [azuread_group.groups](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/group) | data source |
@@ -43,8 +44,9 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_api_apps"></a> [api\_apps](#input\_api\_apps) | The names of the backend API apps if you are creating a frontend spa app | `list(string)` | `[]` | no |
+| <a name="input_api_apps"></a> [api\_apps](#input\_api\_apps) | The names of the backend API apps if you are creating a frontend spa app | <pre>list(object({<br>    name      = string<br>    reference = string<br>  }))</pre> | `[]` | no |
 | <a name="input_app_roles_assignment"></a> [app\_roles\_assignment](#input\_app\_roles\_assignment) | Names of the Apps + Roles Assignment to App | <pre>list(object({<br>    name  = string<br>    roles = list(string)<br>  }))</pre> | `[]` | no |
+| <a name="input_assigned_to_apps"></a> [assigned\_to\_apps](#input\_assigned\_to\_apps) | The names of the server API apps that this app needs access to | <pre>list(object({<br>    name      = string<br>    reference = string<br>  }))</pre> | `[]` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment of Azure app. | `string` | n/a | yes |
 | <a name="input_group_roles_assignment"></a> [group\_roles\_assignment](#input\_group\_roles\_assignment) | Names of the Groups + Roles Assignment to App | <pre>list(object({<br>    name  = string<br>    roles = list(string)<br>  }))</pre> | `[]` | no |
 | <a name="input_homepage_url"></a> [homepage\_url](#input\_homepage\_url) | (Optional) Home page or landing page of the application | `string` | `null` | no |
