@@ -27,13 +27,10 @@ variable "group_roles_assignment" {
   default = []
 }
 
-variable "app_roles_assignment" {
-  description = "Names of the Apps + Roles Assignment to App"
-  type = list(object({
-    name  = string
-    roles = list(string)
-  }))
-  default = []
+variable "roles" {
+  description = "List of roles to be created"
+  type        = list(string)
+  default     = []
 }
 
 variable "api_apps" {
@@ -50,6 +47,7 @@ variable "assigned_to_apps" {
   type = list(object({
     name      = string
     reference = string
+    roles     = list(string)
   }))
   default = []
 }

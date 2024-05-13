@@ -33,26 +33,25 @@
 | [random_uuid.app_scope](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/uuid) | resource |
 | [random_uuid.role_uuid](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/uuid) | resource |
 | [azuread_application.api_apps](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/application) | data source |
-| [azuread_application.apps_assignment](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/application) | data source |
 | [azuread_application.assigned_to_apps](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/application) | data source |
 | [azuread_application_published_app_ids.well_known](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/application_published_app_ids) | data source |
 | [azuread_client_config.current](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/client_config) | data source |
 | [azuread_group.groups](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/group) | data source |
-| [azuread_service_principal.apps_assignment](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/service_principal) | data source |
+| [azuread_service_principal.assigned_to_apps](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/service_principal) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_api_apps"></a> [api\_apps](#input\_api\_apps) | The names of the backend API apps if you are creating a frontend spa app | <pre>list(object({<br>    name      = string<br>    reference = string<br>  }))</pre> | `[]` | no |
-| <a name="input_app_roles_assignment"></a> [app\_roles\_assignment](#input\_app\_roles\_assignment) | Names of the Apps + Roles Assignment to App | <pre>list(object({<br>    name  = string<br>    roles = list(string)<br>  }))</pre> | `[]` | no |
-| <a name="input_assigned_to_apps"></a> [assigned\_to\_apps](#input\_assigned\_to\_apps) | The names of the server API apps that this app needs access to | <pre>list(object({<br>    name      = string<br>    reference = string<br>  }))</pre> | `[]` | no |
+| <a name="input_assigned_to_apps"></a> [assigned\_to\_apps](#input\_assigned\_to\_apps) | The names of the server API apps that this app needs access to | <pre>list(object({<br>    name      = string<br>    reference = string<br>    roles     = list(string)<br>  }))</pre> | `[]` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment of Azure app. | `string` | n/a | yes |
 | <a name="input_group_roles_assignment"></a> [group\_roles\_assignment](#input\_group\_roles\_assignment) | Names of the Groups + Roles Assignment to App | <pre>list(object({<br>    name  = string<br>    roles = list(string)<br>  }))</pre> | `[]` | no |
 | <a name="input_homepage_url"></a> [homepage\_url](#input\_homepage\_url) | (Optional) Home page or landing page of the application | `string` | `null` | no |
 | <a name="input_logout_url"></a> [logout\_url](#input\_logout\_url) | (Optional) The URL that will be used to sign out a user | `string` | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name of application using the Azure app. | `string` | n/a | yes |
 | <a name="input_redirect_uris"></a> [redirect\_uris](#input\_redirect\_uris) | The redirect URIs where OAuth 2.0 authorization codes and access tokens are sent | `list(string)` | `[]` | no |
+| <a name="input_roles"></a> [roles](#input\_roles) | List of roles to be created | `list(string)` | `[]` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags (user + octopus) to assign to all resources | `map(string)` | n/a | yes |
 | <a name="input_type"></a> [type](#input\_type) | Type of Azure app. Either a spa or api app | `string` | n/a | yes |
 

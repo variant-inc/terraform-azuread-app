@@ -4,7 +4,7 @@ locals {
   distinct_roles = distinct(
     flatten(concat(
       [for g in var.group_roles_assignment : g.roles],
-      [for g in var.app_roles_assignment : g.roles],
+      [var.roles],
     ))
   )
 
@@ -55,8 +55,6 @@ locals {
     "xms_tpl",
     "ztdid"
   ]
-
-  assigned_to_apps = { for app in var.assigned_to_apps : app.name => app }
 }
 
 resource "random_uuid" "role_uuid" {
@@ -68,12 +66,6 @@ resource "random_uuid" "app_scope" {}
 data "azuread_application_published_app_ids" "well_known" {}
 
 data "azuread_client_config" "current" {}
-
-# for exporting the assigned_to_apps information
-data "azuread_application" "assigned_to_apps" {
-  for_each     = local.assigned_to_apps
-  display_name = each.key
-}
 
 resource "azuread_service_principal" "msgraph" {
   client_id    = data.azuread_application_published_app_ids.well_known.result.MicrosoftGraph
