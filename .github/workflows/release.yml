@@ -18,6 +18,6 @@ jobs:
       id-token: write
     runs-on: ubuntu-latest
     steps:
-      - uses: variant-inc/actions-setup@v2
+      - uses: variant-inc/actions-setup@09b70ad2427d62fb15dad2fed65becd6f741514b # v2
       - name: Create Release Action
-        uses: variant-inc/actions-collection/create-release-tag@v2
+        uses: variant-inc/actions-collection/create-release-tag@a6850634fd3f70e3e771d6aa9ff8a6741119eac6 # v2
