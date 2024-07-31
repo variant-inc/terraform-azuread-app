@@ -179,11 +179,12 @@ resource "azuread_application_password" "main_app" {
 
 resource "azuread_service_principal" "main_app" {
   client_id                    = azuread_application.main_app.client_id
-  app_role_assignment_required = false
+  app_role_assignment_required = true
   owners                       = [data.azuread_client_config.current.object_id]
   notes                        = jsonencode(var.tags)
 
   feature_tags {
     enterprise = true
+    hide       = true
   }
 }
